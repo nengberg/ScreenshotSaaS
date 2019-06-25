@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 
-using Screenshot.Core.BuildingBlocks;
-
 namespace Screenshot.Processor
 {
-    public class CaptureScreenshotMessageHandler : IMessageHandler<CaptureScreenshotMessage>
+    public class CaptureScreenshotMessageHandler
     {
         public Task Handle(CaptureScreenshotMessage message)
         {
@@ -18,7 +16,7 @@ namespace Screenshot.Processor
             {
                 driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
-                screenshot.SaveAsFile($@"{Directory.GetCurrentDirectory()}\{Guid.NewGuid()}.png");
+                //screenshot.SaveAsFile($@"{Directory.GetCurrentDirectory()}\{Guid.NewGuid()}.png");
             }
             return Task.CompletedTask;
         }

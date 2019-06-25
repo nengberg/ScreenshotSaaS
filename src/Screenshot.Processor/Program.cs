@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 
@@ -12,18 +13,37 @@ namespace Screenshot.Processor
 {
     public class Program
     {
+        // AutoResetEvent to signal when to exit the application.
+        private static readonly AutoResetEvent waitHandle = new AutoResetEvent(false);
+
         public static void Main(string[] args)
         {
-            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            // Fire and forget
+            Task.Run(() =>
+            {
+                var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true)
-                .AddJsonFile($"appsettings.{environmentName}.json", true, true)
-                .AddEnvironmentVariables()
-                .Build();
+                var config = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", true, true)
+                    .AddJsonFile($"appsettings.{environmentName}.json", true, true)
+                    .AddEnvironmentVariables()
+                    .Build();
 
-            ConfigureRabbitMq(config);
+                ConfigureRabbitMq(config);
+            });
+
+            // Handle Control+C or Control+Break
+            Console.CancelKeyPress += (o, e) =>
+            {
+                Console.WriteLine("Exit");
+
+                // Allow the manin thread to continue and exit...
+                waitHandle.Set();
+            };
+
+            // Wait
+            waitHandle.WaitOne();
         }
 
         private static void ConfigureRabbitMq(IConfiguration config)
@@ -32,19 +52,18 @@ namespace Screenshot.Processor
             config.GetSection("RabbitMqConnection").Bind(connectionFactory);
 
             using(var conn = connectionFactory.CreateConnection())
-                using(var channel = conn.CreateModel())
-                {
-                    Console.WriteLine("Running!");
+            using(var channel = conn.CreateModel())
+            {
+                const string queueName = "urls";
+                Console.WriteLine($"Subscribing to queue {queueName}.");
 
-                    const string queueName = "urls";
-                    channel.QueueDeclare(queueName, true, false, false, null);
+                channel.QueueDeclare(queueName, true, false, false, null);
 
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += ProcessUrlAndCreateScreenshot();
-                    channel.BasicConsume(queueName, true, consumer);
-
-                    Console.ReadLine();
-                }
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += ProcessUrlAndCreateScreenshot();
+                channel.BasicConsume(queueName, true, consumer);
+                Console.Read();
+            }
         }
 
         private static EventHandler<BasicDeliverEventArgs> ProcessUrlAndCreateScreenshot()
@@ -53,10 +72,10 @@ namespace Screenshot.Processor
             {
                 var body = eventArgs.Body;
                 var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine($"Message received! {message}");
-                var command = new CaptureScreenshotMessage(message);
-                var commandHandler = new CaptureScreenshotMessageHandler();
-                commandHandler.Handle(command);
+                Console.WriteLine($"Processing URL {message} and creating screen shot");
+                var captureScreenshotMessage = new CaptureScreenshotMessage(message);
+                var messageHandler = new CaptureScreenshotMessageHandler();
+                messageHandler.Handle(captureScreenshotMessage);
             };
         }
     }

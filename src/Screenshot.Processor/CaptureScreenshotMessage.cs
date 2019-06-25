@@ -1,8 +1,6 @@
-﻿using Screenshot.Core.BuildingBlocks;
-
-namespace Screenshot.Processor
+﻿namespace Screenshot.Processor
 {
-    public class CaptureScreenshotMessage : IMessage
+    public class CaptureScreenshotMessage
     {
         public CaptureScreenshotMessage(string url)
         {

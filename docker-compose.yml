@@ -1,18 +1,30 @@
 version: '3.3'
 
 services:
+  screenshot-api:
+    build:
+      context: ./src/Screenshot.Api
+      dockerfile: ./Dockerfile
+    environment:
+      - RabbitMqConnection__HostName=rabbitmq
+      - RabbitMqConnection__Password=guest
+      - RabbitMqConnection__Username=guest
+    ports:
+      - "5000:80"
+    networks:
+      - test
   screenshot-processor:
     build:
       context: ./src/Screenshot.Processor
       dockerfile: ./Dockerfile
+    environment:
+      - RabbitMqConnection__HostName=rabbitmq
+      - RabbitMqConnection__Password=guest
+      - RabbitMqConnection__Username=guest
     networks:
       - test
   rabbitmq:
     image: rabbitmq:3-management
-    environment:
-      - RabbitMqConnection:HostName=rabbitmq
-      - RabbitMqConnection:Password=guest
-      - RabbitMqConnection:Username=guest
     ports:
       - "15672:15672"
       - "5672:5672"

@@ -10,7 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using RabbitMQ.Client;
+
 using Screenshot.API.Features.Batch;
+using Screenshot.API.Infrastructure;
 
 namespace Screenshot.API
 {
@@ -32,12 +35,20 @@ namespace Screenshot.API
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining(typeof(SubmitUrlBatchRequestValidator)));
 
             services.AddProblemDetails();
+
+            services.AddTransient<IMessagePublisher>(
+                c =>
+                {
+                    var connectionFactory = new ConnectionFactory();
+                    Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
+                    return new RabbitMQMessagePublisher(connectionFactory);
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
