@@ -18,7 +18,7 @@ namespace Screenshot.Processor
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{environmentName}.json", true, true)
                 .AddEnvironmentVariables()
                 .Build();
@@ -54,8 +54,8 @@ namespace Screenshot.Processor
                 var body = eventArgs.Body;
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine($"Message received! {message}");
-                var command = new CaptureScreenshotCommand(message);
-                var commandHandler = new CaptureScreenshotCommandHandler();
+                var command = new CaptureScreenshotMessage(message);
+                var commandHandler = new CaptureScreenshotMessageHandler();
                 commandHandler.Handle(command);
             };
         }

@@ -1,4 +1,6 @@
-﻿using Hellang.Middleware.ProblemDetails;
+﻿using FluentValidation.AspNetCore;
+
+using Hellang.Middleware.ProblemDetails;
 
 using MediatR;
 
@@ -7,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using Screenshot.API.Features.Batch;
 
 namespace Screenshot.API
 {
@@ -24,7 +28,8 @@ namespace Screenshot.API
         {
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining(typeof(SubmitUrlBatchRequestValidator)));
 
             services.AddProblemDetails();
         }

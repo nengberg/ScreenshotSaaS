@@ -5,17 +5,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
-using Screenshot.Processor.BuildingBlocks;
+
+using Screenshot.Core.BuildingBlocks;
 
 namespace Screenshot.Processor
 {
-    public class CaptureScreenshotCommandHandler : ICommandHandler<CaptureScreenshotCommand>
+    public class CaptureScreenshotMessageHandler : IMessageHandler<CaptureScreenshotMessage>
     {
-        public Task Handle(CaptureScreenshotCommand command)
+        public Task Handle(CaptureScreenshotMessage message)
         {
             using(var driver = CreateFirefoxDriver())
             {
-                driver.Navigate().GoToUrl(command.Url);
+                driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
                 screenshot.SaveAsFile($@"{Directory.GetCurrentDirectory()}\{Guid.NewGuid()}.png");
             }
