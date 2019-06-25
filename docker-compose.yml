@@ -1,0 +1,47 @@
+version: '3.3'
+
+services:
+  screenshot-processor:
+    build:
+      context: ./src/Screenshot.Processor
+      dockerfile: ./Dockerfile
+    networks:
+      - test
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RabbitMqConnection:HostName=rabbitmq
+      - RabbitMqConnection:Password=guest
+      - RabbitMqConnection:Username=guest
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+        test:
+          - "CMD"
+          - "rabbitmqctl"
+          - "status"
+        interval: 10s
+        timeout: 5s
+        retries: 5
+    networks:
+      - test
+  # mongo:
+  #   image: "mongo:latest"
+  #   volumes:
+  #     - ./data-node:/data/db
+  #   ports:
+  #     - 27017:27017
+  #   networks:
+  #     - test
+  
+  # mongo-express:
+  #   image: "mongo-express:latest"
+  #   ports:
+  #     - "8080:8081"
+  #   networks:
+  #     - test
+
+networks:
+  test:
+    driver: bridge
