@@ -65,7 +65,7 @@ namespace Screenshot.Infrastructure.RabbitMq
                 Console.WriteLine($"Processing message {typeof(TMessage).Name}");
                 var concreteType = typeof(IMessageHandler<>).MakeGenericType(typeof(TMessage));
                 using(var scope = _serviceScopeFactory.CreateScope())
-                {
+                {                  
                     var handler = (dynamic)scope.ServiceProvider.GetService(concreteType);
                     handler.Handle((dynamic)concreteMessage);
                 }

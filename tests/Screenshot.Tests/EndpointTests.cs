@@ -12,6 +12,7 @@ using NSubstitute;
 
 using Screenshot.API;
 using Screenshot.Infrastructure;
+using Screenshot.Infrastructure.MongoDb;
 
 namespace Screenshot.Tests
 {
@@ -28,6 +29,7 @@ namespace Screenshot.Tests
                 .ConfigureTestServices(sc =>
                 {
                     sc.AddSingleton(Substitute.For<IMessageBroker>());
+                    sc.AddSingleton(Substitute.For<IMongoContext>());
                     sc.AddTransient(_ => GetScreenshotsQuery);
                 })
                 .UseStartup<Startup>());

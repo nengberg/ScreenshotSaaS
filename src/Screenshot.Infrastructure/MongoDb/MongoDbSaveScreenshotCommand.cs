@@ -4,9 +4,9 @@ namespace Screenshot.Infrastructure.MongoDb
 {
     public class MongoDbSaveScreenshotCommand : ISaveScreenshotCommand
     {
-        private readonly MongoContext _mongoContext;
+        private readonly IMongoContext _mongoContext;
 
-        public MongoDbSaveScreenshotCommand(MongoContext mongoContext)
+        public MongoDbSaveScreenshotCommand(IMongoContext mongoContext)
         {
             _mongoContext = mongoContext;
         }

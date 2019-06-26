@@ -11,13 +11,12 @@ using Shouldly;
 
 using Xunit;
 
-using Screenshot = Screenshot.Infrastructure.Screenshot;
 
 namespace Screenshot.Tests
 {
     public class ScreenshotsControllerTests : EndpointTests
     {
-        private List<Infrastructure.Screenshot> _screenshots;
+        private readonly List<Infrastructure.Screenshot> _screenshots;
 
         public ScreenshotsControllerTests()
         {
@@ -39,8 +38,8 @@ namespace Screenshot.Tests
         [Fact]
         public async Task GivenGetToScreenshots_ScreenshotsReturned_ResponseShouldContainScreenshots()
         {
-            _screenshots.Add(new Infrastructure.Screenshot { Data = new byte[] {1} });
-            _screenshots.Add(new Infrastructure.Screenshot { Data = new byte[] {2} });
+            _screenshots.Add(new Infrastructure.Screenshot { Data = new byte[] { 1 } });
+            _screenshots.Add(new Infrastructure.Screenshot { Data = new byte[] { 2 } });
             GetScreenshotsQuery.Execute().Returns(_screenshots);
 
             var response = await Client.GetAsync("/api/screenshots");

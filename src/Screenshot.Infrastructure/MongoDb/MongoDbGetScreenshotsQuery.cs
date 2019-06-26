@@ -7,9 +7,9 @@ namespace Screenshot.Infrastructure.MongoDb
 {
     public class MongoDbGetScreenshotsQuery : IGetScreenshotsQuery
     {
-        private readonly MongoContext _mongoContext;
+        private readonly IMongoContext _mongoContext;
 
-        public MongoDbGetScreenshotsQuery(MongoContext mongoContext)
+        public MongoDbGetScreenshotsQuery(IMongoContext mongoContext)
         {
             _mongoContext = mongoContext;
         }

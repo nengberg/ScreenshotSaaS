@@ -2,7 +2,7 @@ using MongoDB.Driver;
 
 namespace Screenshot.Infrastructure.MongoDb
 {
-    public class MongoContext
+    public class MongoContext : IMongoContext
     {
         private readonly IMongoDatabase _database;
 
