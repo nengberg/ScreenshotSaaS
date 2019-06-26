@@ -9,6 +9,7 @@ services:
       - RabbitMqConnection__HostName=rabbitmq
       - RabbitMqConnection__Password=guest
       - RabbitMqConnection__Username=guest
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
     ports:
       - "5000:80"
     restart: on-failure
@@ -25,12 +26,14 @@ services:
       - RabbitMqConnection__HostName=rabbitmq
       - RabbitMqConnection__Password=guest
       - RabbitMqConnection__Username=guest
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
     restart: on-failure
     volumes:
       - "./scripts/wait-for-it.sh:/app/wait-for-it.sh"
     entrypoint: ["bash", "-c" ,"./wait-for-it.sh rabbitmq:15672 -t 0; dotnet Screenshot.Processor.dll"]
     networks:
       - test
+
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -46,21 +49,23 @@ services:
         retries: 5
     networks:
       - test
-  # mongo:
-  #   image: "mongo:latest"
-  #   volumes:
-  #     - ./data-node:/data/db
-  #   ports:
-  #     - 27017:27017
-  #   networks:
-  #     - test
+
+  mongo:
+    image: "mongo:latest"
+    volumes:
+      - ./data-node:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - test
   
-  # mongo-express:
-  #   image: "mongo-express:latest"
-  #   ports:
-  #     - "8080:8081"
-  #   networks:
-  #     - test
+  mongo-express:
+    image: "mongo-express:latest"
+    ports:
+      - "8080:8081"
+    restart: on-failure
+    networks:
+      - test
 
 networks:
   test:

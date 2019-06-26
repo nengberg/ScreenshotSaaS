@@ -20,7 +20,7 @@ namespace Screenshot.API.Features.Batch
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<string>>> SubmitUrls([FromBody]SubmitUrlBatchRequest request)
+        public async Task<ActionResult> SubmitUrls([FromBody]SubmitUrlBatchRequest request)
         {
             await _mediator.Send(request);
             return Ok();

@@ -12,10 +12,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using MongoDB.Bson.Serialization;
+
 using RabbitMQ.Client;
 
 using Screenshot.API.Features.Batch;
 using Screenshot.Infrastructure;
+using Screenshot.Infrastructure.MongoDb;
+using Screenshot.Infrastructure.RabbitMq;
 
 namespace Screenshot.API
 {
@@ -29,7 +33,7 @@ namespace Screenshot.API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddMvc()
@@ -38,15 +42,9 @@ namespace Screenshot.API
 
             services.AddProblemDetails();
 
-            services.AddSingleton<IMessageBroker>(
-                c =>
-                {
-                    var connectionFactory = new ConnectionFactory();
-                    Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
-                    return new RabbitMqMessageBroker(connectionFactory, c.GetService<IServiceScopeFactory>());
-                });
-
-            return services.BuildServiceProvider();
+            services.AddRabbitMq(Configuration);
+            services.AddMongoDb(Configuration);
+            services.AddTransient<IGetScreenshotsQuery, MongoDbGetScreenshotsQuery>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

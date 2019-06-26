@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 
 using Screenshot.Infrastructure;
+using Screenshot.Infrastructure.MongoDb;
+using Screenshot.Infrastructure.RabbitMq;
 
 namespace Screenshot.Processor
 {
@@ -30,19 +31,12 @@ namespace Screenshot.Processor
             var services = new ServiceCollection();
 
             services.AddTransient<IMessageHandler<GenerateScreenshotMessage>, GenerateScreenshotMessageHandler>();
-            services.AddSingleton<IMessageBroker>(
-                c =>
-                {
-                    var connectionFactory = new ConnectionFactory();
-                    config.GetSection("RabbitMqConnection").Bind(connectionFactory);
-                    return new RabbitMqMessageBroker(connectionFactory, c.GetService<IServiceScopeFactory>());
-                });
+            services.AddRabbitMq(config);
+            services.AddMongoDb(config);
+
             var serviceProvider = services.BuildServiceProvider();
-
             var messageBroker = serviceProvider.GetService<IMessageBroker>();
-
             messageBroker.Subscribe<GenerateScreenshotMessage>();
-
 
             Console.CancelKeyPress += (o, e) =>
             {

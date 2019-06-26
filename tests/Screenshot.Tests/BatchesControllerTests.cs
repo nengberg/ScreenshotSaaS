@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Screenshot.Tests
 {
-    public class SubmitBatchesTests : EndpointTests
+    public class BatchesControllerTests : EndpointTests
     {
         [Fact]
         public async Task GivenPostToBatches_WhenPostingInvalidUrls_BadRequestShouldBeReturned()
