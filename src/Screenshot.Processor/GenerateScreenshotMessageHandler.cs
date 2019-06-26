@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 
+using Screenshot.Infrastructure;
+
 namespace Screenshot.Processor
 {
-    public class CaptureScreenshotMessageHandler
+    public class GenerateScreenshotMessageHandler : IMessageHandler<GenerateScreenshotMessage>
     {
-        public Task Handle(CaptureScreenshotMessage message)
+        public Task Handle(GenerateScreenshotMessage message)
         {
+            Console.WriteLine($"Generating screenshot from URL {message.Url}");
             using(var driver = CreateFirefoxDriver())
             {
                 driver.Navigate().GoToUrl(message.Url);

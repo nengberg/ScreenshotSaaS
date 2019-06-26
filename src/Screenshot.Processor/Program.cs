@@ -1,26 +1,25 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+
+using Screenshot.Infrastructure;
 
 namespace Screenshot.Processor
 {
     public class Program
     {
-        // AutoResetEvent to signal when to exit the application.
-        private static readonly AutoResetEvent waitHandle = new AutoResetEvent(false);
+        private static readonly AutoResetEvent WaitHandle = new AutoResetEvent(false);
 
         public static void Main(string[] args)
         {
-            // Fire and forget
-            Task.Run(() =>
-            {
+            //Task.Run(() =>
+            //{
                 var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
                 var config = new ConfigurationBuilder()
@@ -30,53 +29,31 @@ namespace Screenshot.Processor
                     .AddEnvironmentVariables()
                     .Build();
 
-                ConfigureRabbitMq(config);
-            });
+                var services = new ServiceCollection();
 
-            // Handle Control+C or Control+Break
+                services.AddTransient<IMessageHandler<GenerateScreenshotMessage>, GenerateScreenshotMessageHandler>();
+                services.AddSingleton<IMessageBroker>(
+                    c =>
+                    {
+                        var connectionFactory = new ConnectionFactory();
+                        config.GetSection("RabbitMqConnection").Bind(connectionFactory);
+                        return new RabbitMqMessageBroker(connectionFactory, c.GetService<IServiceScopeFactory>());
+                    });
+                var serviceProvider = services.BuildServiceProvider();
+
+                var messageBroker = serviceProvider.GetService<IMessageBroker>();
+
+                messageBroker.Subscribe<GenerateScreenshotMessage>();
+            //Console.Read();
+            //});
+
             Console.CancelKeyPress += (o, e) =>
             {
                 Console.WriteLine("Exit");
-
-                // Allow the manin thread to continue and exit...
-                waitHandle.Set();
+                WaitHandle.Set();
             };
 
-            // Wait
-            waitHandle.WaitOne();
-        }
-
-        private static void ConfigureRabbitMq(IConfiguration config)
-        {
-            var connectionFactory = new ConnectionFactory();
-            config.GetSection("RabbitMqConnection").Bind(connectionFactory);
-
-            using(var conn = connectionFactory.CreateConnection())
-            using(var channel = conn.CreateModel())
-            {
-                const string queueName = "urls";
-                Console.WriteLine($"Subscribing to queue {queueName}.");
-
-                channel.QueueDeclare(queueName, true, false, false, null);
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += ProcessUrlAndCreateScreenshot();
-                channel.BasicConsume(queueName, true, consumer);
-                Console.Read();
-            }
-        }
-
-        private static EventHandler<BasicDeliverEventArgs> ProcessUrlAndCreateScreenshot()
-        {
-            return (s, eventArgs) =>
-            {
-                var body = eventArgs.Body;
-                var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine($"Processing URL {message} and creating screen shot");
-                var captureScreenshotMessage = new CaptureScreenshotMessage(message);
-                var messageHandler = new CaptureScreenshotMessageHandler();
-                messageHandler.Handle(captureScreenshotMessage);
-            };
+            WaitHandle.WaitOne();
         }
     }
 }

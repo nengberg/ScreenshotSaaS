@@ -1,4 +1,6 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System;
+
+using FluentValidation.AspNetCore;
 
 using Hellang.Middleware.ProblemDetails;
 
@@ -13,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 
 using Screenshot.API.Features.Batch;
-using Screenshot.API.Infrastructure;
+using Screenshot.Infrastructure;
 
 namespace Screenshot.API
 {
@@ -27,7 +29,7 @@ namespace Screenshot.API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddMvc()
@@ -36,13 +38,15 @@ namespace Screenshot.API
 
             services.AddProblemDetails();
 
-            services.AddTransient<IMessagePublisher>(
+            services.AddSingleton<IMessageBroker>(
                 c =>
                 {
                     var connectionFactory = new ConnectionFactory();
                     Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
-                    return new RabbitMQMessagePublisher(connectionFactory);
+                    return new RabbitMqMessageBroker(connectionFactory, c.GetService<IServiceScopeFactory>());
                 });
+
+            return services.BuildServiceProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

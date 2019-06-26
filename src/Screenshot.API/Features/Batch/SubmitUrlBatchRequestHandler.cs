@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 
 using MediatR;
 
-using Screenshot.API.Infrastructure;
+using Screenshot.Infrastructure;
 
 namespace Screenshot.API.Features.Batch
 {
     public class SubmitUrlBatchRequestHandler : IRequestHandler<SubmitUrlBatchRequest>
     {
-        private readonly IMessagePublisher _messagePublisher;
+        private readonly IMessageBroker _messagePublisher;
 
-        public SubmitUrlBatchRequestHandler(IMessagePublisher messagePublisher)
+        public SubmitUrlBatchRequestHandler(IMessageBroker messagePublisher)
         {
             _messagePublisher = messagePublisher;
         }
@@ -21,7 +21,7 @@ namespace Screenshot.API.Features.Batch
         {
             foreach(var url in request.Urls)
             {
-                _messagePublisher.Publish(url);
+                _messagePublisher.Publish(new GenerateScreenshotMessage(url));
             }
 
             return Task.FromResult(Unit.Value);
