@@ -3,24 +3,32 @@ version: '3.3'
 services:
   screenshot-api:
     build:
-      context: ./src/Screenshot.Api
-      dockerfile: ./Dockerfile
+      context: ./
+      dockerfile: ./src/Screenshot.API/Dockerfile
     environment:
       - RabbitMqConnection__HostName=rabbitmq
       - RabbitMqConnection__Password=guest
       - RabbitMqConnection__Username=guest
     ports:
       - "5000:80"
+    restart: on-failure
+    volumes:
+      - "./scripts/wait-for-it.sh:/app/wait-for-it.sh"
+    entrypoint: ["bash", "-c" ,"./wait-for-it.sh rabbitmq:15672 -t 0; dotnet Screenshot.API.dll"]
     networks:
       - test
   screenshot-processor:
     build:
-      context: ./src/Screenshot.Processor
-      dockerfile: ./Dockerfile
+      context: ./
+      dockerfile: ./src/Screenshot.Processor/Dockerfile
     environment:
       - RabbitMqConnection__HostName=rabbitmq
       - RabbitMqConnection__Password=guest
       - RabbitMqConnection__Username=guest
+    restart: on-failure
+    volumes:
+      - "./scripts/wait-for-it.sh:/app/wait-for-it.sh"
+    entrypoint: ["bash", "-c" ,"./wait-for-it.sh rabbitmq:15672 -t 0; dotnet Screenshot.Processor.dll"]
     networks:
       - test
   rabbitmq:

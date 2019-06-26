@@ -18,34 +18,31 @@ namespace Screenshot.Processor
 
         public static void Main(string[] args)
         {
-            //Task.Run(() =>
-            //{
-                var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-                var config = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", true, true)
-                    .AddJsonFile($"appsettings.{environmentName}.json", true, true)
-                    .AddEnvironmentVariables()
-                    .Build();
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{environmentName}.json", true, true)
+                .AddEnvironmentVariables()
+                .Build();
 
-                var services = new ServiceCollection();
+            var services = new ServiceCollection();
 
-                services.AddTransient<IMessageHandler<GenerateScreenshotMessage>, GenerateScreenshotMessageHandler>();
-                services.AddSingleton<IMessageBroker>(
-                    c =>
-                    {
-                        var connectionFactory = new ConnectionFactory();
-                        config.GetSection("RabbitMqConnection").Bind(connectionFactory);
-                        return new RabbitMqMessageBroker(connectionFactory, c.GetService<IServiceScopeFactory>());
-                    });
-                var serviceProvider = services.BuildServiceProvider();
+            services.AddTransient<IMessageHandler<GenerateScreenshotMessage>, GenerateScreenshotMessageHandler>();
+            services.AddSingleton<IMessageBroker>(
+                c =>
+                {
+                    var connectionFactory = new ConnectionFactory();
+                    config.GetSection("RabbitMqConnection").Bind(connectionFactory);
+                    return new RabbitMqMessageBroker(connectionFactory, c.GetService<IServiceScopeFactory>());
+                });
+            var serviceProvider = services.BuildServiceProvider();
 
-                var messageBroker = serviceProvider.GetService<IMessageBroker>();
+            var messageBroker = serviceProvider.GetService<IMessageBroker>();
 
-                messageBroker.Subscribe<GenerateScreenshotMessage>();
-            //Console.Read();
-            //});
+            messageBroker.Subscribe<GenerateScreenshotMessage>();
+
 
             Console.CancelKeyPress += (o, e) =>
             {

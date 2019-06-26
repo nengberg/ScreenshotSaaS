@@ -4,11 +4,12 @@ WORKDIR /app
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore Screenshot.API.csproj
-RUN dotnet build --no-restore Screenshot.API.csproj
+WORKDIR /src/src/Screenshot.API
+RUN dotnet restore
+RUN dotnet build --no-restore
 
 FROM build AS publish
-RUN dotnet publish --no-restore Screenshot.API.csproj -c Release -o /app
+RUN dotnet publish --no-restore -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
