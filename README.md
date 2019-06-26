@@ -4,7 +4,7 @@
 
 * Docker (and shared drive)
 * .NET Core 2.2*
-* Firefox installed*
+* Firefox*
 * MongoDb*
 * RabbitMQ*
 
@@ -25,6 +25,16 @@ If you want to run your services outside Docker and only with the infrastructure
 
     docker-compose -f .\docker-compose.infrastructure.yml -f up
 
+## Endpoints
 
-### Architecture
+There are two endpoints exposed. 
+
+    POST /api/batches
+    GET  /api/screenshots
+
+If you use the default settings it will be accessible through http://localhost:5000. You can see example requests in the Postman collection in the repository
+
+`/api/batches` is an endpoint where you can submit URL:s that will be screen captured. They will then eventually be available at `/api/screenshots`
+
+## Architecture
 
