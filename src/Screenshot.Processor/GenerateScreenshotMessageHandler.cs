@@ -12,16 +12,23 @@ namespace Screenshot.Processor
 {
     public class GenerateScreenshotMessageHandler : IMessageHandler<GenerateScreenshotMessage>
     {
-        public Task Handle(GenerateScreenshotMessage message)
+        private readonly ISaveScreenshotCommand _saveScreenShotCommand;
+
+        public GenerateScreenshotMessageHandler(ISaveScreenshotCommand saveScreenShotCommand)
+        {
+            _saveScreenShotCommand = saveScreenShotCommand;
+        }
+
+        public async Task Handle(GenerateScreenshotMessage message)
         {
             Console.WriteLine($"Generating screenshot from URL {message.Url}");
             using(var driver = CreateFirefoxDriver())
             {
                 driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
+                await _saveScreenShotCommand.Execute(new Infrastructure.Screenshot { Data = screenshot.AsByteArray });
                 //screenshot.SaveAsFile($@"{Directory.GetCurrentDirectory()}\{Guid.NewGuid()}.png");
             }
-            return Task.CompletedTask;
         }
 
         private static IWebDriver CreateFirefoxDriver()

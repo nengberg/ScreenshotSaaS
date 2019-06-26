@@ -9,7 +9,11 @@ namespace Screenshot.Infrastructure.MongoDb
     {
         public static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
         {
-            BsonClassMap.RegisterClassMap<Screenshot>(cm => { cm.AutoMap(); });
+            BsonClassMap.RegisterClassMap<Screenshot>(cm =>
+            {
+                cm.MapIdField(s => s.Id);
+                cm.AutoMap();
+            });
             services.AddSingleton<MongoContext>(_ =>
             {
                 var mongoSettings = new MongoDbSettings();

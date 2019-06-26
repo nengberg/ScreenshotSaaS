@@ -1,6 +1,6 @@
 using MongoDB.Driver;
 
-namespace Screenshot.Infrastructure
+namespace Screenshot.Infrastructure.MongoDb
 {
     public class MongoContext
     {

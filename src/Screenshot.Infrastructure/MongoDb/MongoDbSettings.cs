@@ -1,4 +1,4 @@
-namespace Screenshot.Infrastructure
+namespace Screenshot.Infrastructure.MongoDb
 {
     public class MongoDbSettings
     {

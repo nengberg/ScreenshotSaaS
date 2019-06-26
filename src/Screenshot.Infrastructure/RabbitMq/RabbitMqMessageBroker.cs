@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Screenshot.Infrastructure
+namespace Screenshot.Infrastructure.RabbitMq
 {
     public class RabbitMqMessageBroker : IMessageBroker
     {
