@@ -8,9 +8,11 @@
 * MongoDb*
 * RabbitMQ*
 
-*If you plan to run it locally and not with Docker
+*If you don't run it using the docker-compose files.
 
-## Docker
+## How to run it
+
+### Docker
 
 Run Docker locally:
 
@@ -25,7 +27,7 @@ If you want to run your services outside Docker and only with the infrastructure
 
     docker-compose -f .\docker-compose.infrastructure.yml -f up
 
-## Endpoints
+### Endpoints
 
 There are two endpoints exposed. 
 
@@ -34,7 +36,25 @@ There are two endpoints exposed.
 
 If you use the default settings it will be accessible through http://localhost:5000. You can see example requests in the Postman collection in the repository
 
-`/api/batches` is an endpoint where you can submit URL:s that will be screen captured. They will then eventually be available at `/api/screenshots`
+`/api/batches`
+
+`/api/batches` accepts a json body
+
+    {
+        "urls": [ 
+            "https://github.com/",
+            "https://www.google.com/"
+        ]
+    }
+
+The specified URL:s will be screen captured. They will then eventually be available at `/api/screenshots`
 
 ## Architecture
 
+The application consist of two services. API and Processor.
+
+The API is responsible for exposing API endpoints to the client. The API is communicating with the Processor via asynchronous messages (a simple implementation of RabbitMQ is the one used here).
+
+The Processor will process incoming messages of type `GenerateScreenshotMessage` and sceen capture the URL in the message by communicating with a selenium hub. The screenshot is then persisted in a MongoDB instance.
+
+If you run the application via docker you will have access to Mongo Express to view the data in the database via `http://localhost:8080`. The name of the database is `Screenshots_dkr`.
