@@ -32,7 +32,8 @@ namespace Screenshot.API.Features.Screenshot
         {
             return screenshots.Select(screenshot => new ScreenshotResponse
             {
-                Data = screenshot.Data
+                Data = screenshot.Data,
+                Url = screenshot.Url
             });
         }
     }

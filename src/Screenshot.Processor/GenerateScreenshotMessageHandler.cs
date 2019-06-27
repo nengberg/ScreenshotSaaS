@@ -32,8 +32,17 @@ namespace Screenshot.Processor
             {
                 driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
-                await _saveScreenshotCommand.Execute(new Domain.Screenshot { Data = screenshot.AsByteArray }, CancellationToken.None);
+                await _saveScreenshotCommand.Execute(CreateScreenshot(message, screenshot.AsByteArray), CancellationToken.None);
             }
+        }
+
+        private static Domain.Screenshot CreateScreenshot(GenerateScreenshotMessage message, byte[] data)
+        {
+            return new Domain.Screenshot
+            {
+                Url = message.Url,
+                Data = data
+            };
         }
     }
 }
