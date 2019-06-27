@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using NSubstitute;
@@ -7,6 +8,8 @@ using OpenQA.Selenium;
 
 using Screenshot.Domain;
 using Screenshot.Processor;
+
+using Shouldly;
 
 using Xunit;
 
@@ -53,6 +56,14 @@ namespace Screenshot.Tests
                 .Execute(
                     Arg.Is<Domain.Screenshot>(s => s.Data == _screenshot.AsByteArray),
                     Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task Handle_MessageNull_ThrowsArgumentNullException()
+        {
+            var exception = await Record.ExceptionAsync(() => _sut.Handle(null));
+
+            exception.ShouldBeOfType<ArgumentNullException>();
         }
     }
 }

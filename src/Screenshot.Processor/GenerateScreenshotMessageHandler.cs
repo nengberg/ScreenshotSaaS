@@ -21,6 +21,11 @@ namespace Screenshot.Processor
 
         public async Task Handle(GenerateScreenshotMessage message)
         {
+            if(message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
             Console.WriteLine($"Generating screenshot from URL {message.Url}");
 
             using(var driver = _webDriverFactory.Create())
