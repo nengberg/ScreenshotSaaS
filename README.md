@@ -82,6 +82,6 @@ With this setup only one instance of MongoDB is used. To make sure that this won
 
 No load balancer is used in this example application for simplicity. In a real world scenario nginx or any other good load balancer should be used to handle load properly.
 
-The message queue implementation of RabbitMQ is really simplified, just to examplify decoupling between the services and make them autonomous and subject for scaling. In a real world scenario this should be configured using multiple nodes to form a cluster. Resiliency of connection and retries for messages should also be implemented.
+The message queue implementation of RabbitMQ is really simplified, just to examplify decoupling between the services and make them autonomous and subject for scaling. In a real world scenario this should be configured using multiple nodes to form a cluster. That will ensure high availability of queues and increase the throughput. Resiliency of connection and retries for messages should also be implemented.
 
-In the API when requesting the screenshots the response is not very optimized now. Several improvements could be done here such as filtering and pagination.
+In the API when requesting the screenshots the response is not very optimized now. Several improvements could be done hereg such as filtering and pagination.
