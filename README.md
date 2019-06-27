@@ -34,7 +34,7 @@ There are two endpoints exposed.
     POST /api/batches
     GET  /api/screenshots
 
-If you use the default settings it will be accessible through http://localhost:5000. You can see example requests in the Postman collection in the repository
+If you use the default settings it will be accessible through http://localhost:5000. You can see example requests in the Postman collection `Screenshot SaaS.postman_collection.json` in the repository.
 
 `/api/batches`
 
