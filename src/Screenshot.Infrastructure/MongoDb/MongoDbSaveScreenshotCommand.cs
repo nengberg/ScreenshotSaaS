@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 
 using Screenshot.Domain;
@@ -13,9 +14,9 @@ namespace Screenshot.Infrastructure.MongoDb
             _mongoContext = mongoContext;
         }
 
-        public async Task Execute(Domain.Screenshot screenshot)
+        public async Task Execute(Domain.Screenshot screenshot, CancellationToken cancellationToken)
         {
-            await _mongoContext.Screenshots.InsertOneAsync(screenshot);
+            await _mongoContext.Screenshots.InsertOneAsync(screenshot, cancellationToken: cancellationToken);
         }
     }
 }

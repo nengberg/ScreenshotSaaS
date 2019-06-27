@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
@@ -28,7 +29,7 @@ namespace Screenshot.Processor
             {
                 driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
-                await _saveScreenShotCommand.Execute(new Domain.Screenshot { Data = screenshot.AsByteArray });
+                await _saveScreenShotCommand.Execute(new Domain.Screenshot { Data = screenshot.AsByteArray }, CancellationToken.None);
             }
 
         }

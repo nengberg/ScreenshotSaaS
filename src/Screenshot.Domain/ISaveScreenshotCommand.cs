@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Screenshot.Domain
 {
     public interface ISaveScreenshotCommand
     {
-        Task Execute(Screenshot screenshot);
+        Task Execute(Screenshot screenshot, CancellationToken cancellationToken);
     }
 }

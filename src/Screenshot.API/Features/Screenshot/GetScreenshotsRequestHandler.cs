@@ -21,7 +21,8 @@ namespace Screenshot.API.Features.Screenshot
         public async Task<ScreenshotsResponse> Handle(GetScreenshotsRequest request, CancellationToken cancellationToken)
         {
             var response = new ScreenshotsResponse();
-            var result = await _getScreenshotsQuery.Execute();
+            var result = await _getScreenshotsQuery.Execute(cancellationToken);
+            response.Count = result.Count();
             response.Screenshots = MapScreenshots(result);
 
             return response;

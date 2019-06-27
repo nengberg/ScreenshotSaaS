@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 using NSubstitute;
@@ -26,13 +27,14 @@ namespace Screenshot.Tests
         [Fact]
         public async Task GivenGetToScreenshots_NoScreenshotsReturned_AnEmptyResponseShouldBeReturned()
         {
-            GetScreenshotsQuery.Execute().Returns(_screenshots);
+            GetScreenshotsQuery.Execute(CancellationToken.None).Returns(_screenshots);
 
             var response = await Client.GetAsync("/api/screenshots");
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             var screenshotResponse = await DeserializeResponse<ScreenshotsResponse>(response);
             screenshotResponse.Screenshots.ShouldBeEmpty();
+            screenshotResponse.Count.ShouldBe(0);
         }
 
         [Fact]
@@ -40,13 +42,17 @@ namespace Screenshot.Tests
         {
             _screenshots.Add(new Domain.Screenshot { Data = new byte[] { 1 } });
             _screenshots.Add(new Domain.Screenshot { Data = new byte[] { 2 } });
-            GetScreenshotsQuery.Execute().Returns(_screenshots);
+            GetScreenshotsQuery.Execute(CancellationToken.None).Returns(_screenshots);
 
             var response = await Client.GetAsync("/api/screenshots");
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             var screenshotResponse = await DeserializeResponse<ScreenshotsResponse>(response);
-            screenshotResponse.Screenshots.Count().ShouldBe(_screenshots.Count);
+            var screenshots = screenshotResponse.Screenshots.ToList();
+            screenshots.Count.ShouldBe(_screenshots.Count);
+            screenshots[0].Data.ShouldBe(_screenshots[0].Data);
+            screenshots[1].Data.ShouldBe(_screenshots[1].Data);
+            screenshotResponse.Count.ShouldBe(_screenshots.Count);
         }
     }
 }

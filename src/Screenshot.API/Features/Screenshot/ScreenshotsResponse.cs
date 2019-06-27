@@ -9,6 +9,7 @@ namespace Screenshot.API.Features.Screenshot
             Screenshots = new List<ScreenshotResponse>();
         }
 
+        public int Count { get; set; }
         public IEnumerable<ScreenshotResponse> Screenshots { get; set; }
     }
 }

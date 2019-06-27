@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using MongoDB.Driver;
@@ -16,9 +17,9 @@ namespace Screenshot.Infrastructure.MongoDb
             _mongoContext = mongoContext;
         }
 
-        public async Task<IEnumerable<Domain.Screenshot>> Execute()
+        public async Task<IEnumerable<Domain.Screenshot>> Execute(CancellationToken cancellationToken)
         {
-            return await _mongoContext.Screenshots.Find(_ => true).ToListAsync();
+            return await _mongoContext.Screenshots.Find(_ => true).ToListAsync(cancellationToken);
         }
     }
 }
