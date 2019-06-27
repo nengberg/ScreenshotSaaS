@@ -1,11 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Remote;
 
 using Screenshot.Domain;
 using Screenshot.Infrastructure;
@@ -14,50 +10,25 @@ namespace Screenshot.Processor
 {
     public class GenerateScreenshotMessageHandler : IMessageHandler<GenerateScreenshotMessage>
     {
-        private readonly ISaveScreenshotCommand _saveScreenShotCommand;
+        private readonly IWebDriverFactory _webDriverFactory;
+        private readonly ISaveScreenshotCommand _saveScreenshotCommand;
 
-        public GenerateScreenshotMessageHandler(ISaveScreenshotCommand saveScreenShotCommand)
+        public GenerateScreenshotMessageHandler(IWebDriverFactory webDriverFactory, ISaveScreenshotCommand saveScreenshotCommand)
         {
-            _saveScreenShotCommand = saveScreenShotCommand;
+            _webDriverFactory = webDriverFactory;
+            _saveScreenshotCommand = saveScreenshotCommand;
         }
 
         public async Task Handle(GenerateScreenshotMessage message)
         {
             Console.WriteLine($"Generating screenshot from URL {message.Url}");
 
-            using(var driver = CreateWebDriver())
+            using(var driver = _webDriverFactory.Create())
             {
                 driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
-                await _saveScreenShotCommand.Execute(new Domain.Screenshot { Data = screenshot.AsByteArray }, CancellationToken.None);
+                await _saveScreenshotCommand.Execute(new Domain.Screenshot { Data = screenshot.AsByteArray }, CancellationToken.None);
             }
-
-        }
-
-        private static IWebDriver CreateWebDriver()
-        {
-            var driver = GetWebDriverType();
-            if(driver == "Remote")
-            {
-                return new RemoteWebDriver(new Uri("http://seleniumhub:4444/wd/hub"), new FirefoxOptions());
-            }
-
-            var driverPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var service = FirefoxDriverService.CreateDefaultService(driverPath, "geckodriver.exe");
-            var options = new FirefoxOptions();
-            options.AddArguments("--headless");
-            return new FirefoxDriver(service, options);
-        }
-
-        private static string GetWebDriverType()
-        {
-            var value = Environment.GetEnvironmentVariable("WebDriverType", EnvironmentVariableTarget.Machine);
-            if(string.IsNullOrEmpty(value))
-            {
-                value = Environment.GetEnvironmentVariable("WebDriverType", EnvironmentVariableTarget.Process);
-            }
-
-            return value;
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Screenshot.Processor
             var services = new ServiceCollection();
 
             services.AddTransient<ISaveScreenshotCommand, MongoDbSaveScreenshotCommand>();
+            services.AddTransient<IWebDriverFactory, WebDriverFactory>();
             services.AddTransient<IMessageHandler<GenerateScreenshotMessage>, GenerateScreenshotMessageHandler>();
             services.AddRabbitMq(config);
             services.AddMongoDb(config);

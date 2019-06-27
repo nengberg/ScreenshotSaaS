@@ -25,7 +25,7 @@ namespace Screenshot.Tests
         }
 
         [Fact]
-        public async Task GivenGetToScreenshots_NoScreenshotsReturned_AnEmptyResponseShouldBeReturned()
+        public async Task GivenGetToScreenshots_WhenNoScreenshotsReturned_AnEmptyResponseShouldBeReturned()
         {
             GetScreenshotsQuery.Execute(CancellationToken.None).Returns(_screenshots);
 
@@ -38,7 +38,7 @@ namespace Screenshot.Tests
         }
 
         [Fact]
-        public async Task GivenGetToScreenshots_ScreenshotsReturned_ResponseShouldContainScreenshots()
+        public async Task GivenGetToScreenshots_WhenScreenshotsReturned_ResponseShouldContainScreenshots()
         {
             _screenshots.Add(new Domain.Screenshot { Data = new byte[] { 1 } });
             _screenshots.Add(new Domain.Screenshot { Data = new byte[] { 2 } });
