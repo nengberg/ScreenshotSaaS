@@ -20,7 +20,7 @@ services:
   mongo:
     image: "mongo:latest"
     volumes:
-      - ./data-node:/data/db
+      - mongodata:/data/db
     ports:
       - 27017:27017
     networks:
@@ -54,3 +54,5 @@ services:
 networks:
   test:
     driver: bridge
+volumes:
+  mongodata:

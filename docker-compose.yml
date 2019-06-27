@@ -16,7 +16,7 @@ services:
     restart: on-failure
     volumes:
       - "./scripts/wait-for-it.sh:/app/wait-for-it.sh"
-    entrypoint: ["bash", "-c" ,"./wait-for-it.sh rabbitmq:15672 -t 0; dotnet Screenshot.API.dll"]
+    entrypoint: ["bash", "-c" ,"./wait-for-it.sh rabbitmq:15672 -t 0;./wait-for-it.sh mongo:27017 -t 0; dotnet Screenshot.API.dll"]
     networks:
       - test
   screenshot-processor:
@@ -33,7 +33,7 @@ services:
     restart: on-failure
     volumes:
       - "./scripts/wait-for-it.sh:/app/wait-for-it.sh"
-    entrypoint: ["bash", "-c" ,"./wait-for-it.sh rabbitmq:15672 -t 0; dotnet Screenshot.Processor.dll"]
+    entrypoint: ["bash", "-c" ,"./wait-for-it.sh rabbitmq:15672 -t 0;./wait-for-it.sh mongo:27017 -t 0; dotnet Screenshot.Processor.dll"]
     networks:
       - test
 
