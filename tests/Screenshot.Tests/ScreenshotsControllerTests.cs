@@ -16,11 +16,11 @@ namespace Screenshot.Tests
 {
     public class ScreenshotsControllerTests : EndpointTests
     {
-        private readonly List<Infrastructure.Screenshot> _screenshots;
+        private readonly List<Domain.Screenshot> _screenshots;
 
         public ScreenshotsControllerTests()
         {
-            _screenshots = new List<Infrastructure.Screenshot>();
+            _screenshots = new List<Domain.Screenshot>();
         }
 
         [Fact]
@@ -38,8 +38,8 @@ namespace Screenshot.Tests
         [Fact]
         public async Task GivenGetToScreenshots_ScreenshotsReturned_ResponseShouldContainScreenshots()
         {
-            _screenshots.Add(new Infrastructure.Screenshot { Data = new byte[] { 1 } });
-            _screenshots.Add(new Infrastructure.Screenshot { Data = new byte[] { 2 } });
+            _screenshots.Add(new Domain.Screenshot { Data = new byte[] { 1 } });
+            _screenshots.Add(new Domain.Screenshot { Data = new byte[] { 2 } });
             GetScreenshotsQuery.Execute().Returns(_screenshots);
 
             var response = await Client.GetAsync("/api/screenshots");

@@ -9,9 +9,9 @@ namespace Screenshot.Infrastructure.MongoDb
     {
         public static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
         {
-            if(BsonClassMap.IsClassMapRegistered(typeof(Screenshot)))
+            if(BsonClassMap.IsClassMapRegistered(typeof(Domain.Screenshot)))
             {
-                BsonClassMap.RegisterClassMap<Screenshot>(cm =>
+                BsonClassMap.RegisterClassMap<Domain.Screenshot>(cm =>
                 {
                     cm.MapIdField(s => s.Id);
                     cm.AutoMap();

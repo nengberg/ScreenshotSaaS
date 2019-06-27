@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "693dd778-ea3e-4b4e-89a9-3e8cbce95257",
+		"name": "Screenshot SaaS",
+		"description": "Sample requests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Post URL-batch",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"urls\": [ \n\t\t\"https://github.com/\",\n\t\t\"https://www.google.com/\"\n\t\t]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/batches",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"batches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Screenshots",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/screenshots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"screenshots"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

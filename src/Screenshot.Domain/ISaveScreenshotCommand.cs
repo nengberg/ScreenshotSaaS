@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Screenshot.Infrastructure
+namespace Screenshot.Domain
 {
     public interface ISaveScreenshotCommand
     {

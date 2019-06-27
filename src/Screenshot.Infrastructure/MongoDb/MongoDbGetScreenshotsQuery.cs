@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 
 using MongoDB.Driver;
 
+using Screenshot.Domain;
+
 namespace Screenshot.Infrastructure.MongoDb
 {
     public class MongoDbGetScreenshotsQuery : IGetScreenshotsQuery
@@ -14,7 +16,7 @@ namespace Screenshot.Infrastructure.MongoDb
             _mongoContext = mongoContext;
         }
 
-        public async Task<IEnumerable<Screenshot>> Execute()
+        public async Task<IEnumerable<Domain.Screenshot>> Execute()
         {
             return await _mongoContext.Screenshots.Find(_ => true).ToListAsync();
         }

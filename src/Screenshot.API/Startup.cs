@@ -1,6 +1,4 @@
-﻿using System;
-
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 
 using Hellang.Middleware.ProblemDetails;
 
@@ -12,12 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using MongoDB.Bson.Serialization;
-
-using RabbitMQ.Client;
-
 using Screenshot.API.Features.Batch;
-using Screenshot.Infrastructure;
+using Screenshot.Domain;
 using Screenshot.Infrastructure.MongoDb;
 using Screenshot.Infrastructure.RabbitMq;
 
@@ -31,8 +25,7 @@ namespace Screenshot.API
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup).Assembly);
@@ -46,8 +39,7 @@ namespace Screenshot.API
             services.AddMongoDb(Configuration);
             services.AddTransient<IGetScreenshotsQuery, MongoDbGetScreenshotsQuery>();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if(env.IsDevelopment())

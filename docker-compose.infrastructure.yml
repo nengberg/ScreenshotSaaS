@@ -40,6 +40,7 @@ services:
       - 4444:4444
     networks:
       - test
+
   firefoxnode:
     image: selenium/node-firefox-debug
     ports:

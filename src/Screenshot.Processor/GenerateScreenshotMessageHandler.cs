@@ -6,6 +6,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 
+using Screenshot.Domain;
 using Screenshot.Infrastructure;
 
 namespace Screenshot.Processor
@@ -27,7 +28,7 @@ namespace Screenshot.Processor
             {
                 driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
-                await _saveScreenShotCommand.Execute(new Infrastructure.Screenshot { Data = screenshot.AsByteArray });
+                await _saveScreenShotCommand.Execute(new Domain.Screenshot { Data = screenshot.AsByteArray });
             }
 
         }

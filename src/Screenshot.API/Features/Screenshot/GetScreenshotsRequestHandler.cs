@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using MediatR;
 
-using Screenshot.Infrastructure;
+using Screenshot.Domain;
 
 namespace Screenshot.API.Features.Screenshot
 {
@@ -28,7 +27,7 @@ namespace Screenshot.API.Features.Screenshot
             return response;
         }
 
-        private static IEnumerable<ScreenshotResponse> MapScreenshots(IEnumerable<Infrastructure.Screenshot> screenshots)
+        private static IEnumerable<ScreenshotResponse> MapScreenshots(IEnumerable<Domain.Screenshot> screenshots)
         {
             return screenshots.Select(screenshot => new ScreenshotResponse
             {

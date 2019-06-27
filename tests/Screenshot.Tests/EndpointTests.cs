@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using NSubstitute;
 
 using Screenshot.API;
+using Screenshot.Domain;
 using Screenshot.Infrastructure;
 using Screenshot.Infrastructure.MongoDb;
 

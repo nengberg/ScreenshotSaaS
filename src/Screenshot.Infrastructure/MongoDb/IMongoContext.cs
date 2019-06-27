@@ -4,6 +4,6 @@ namespace Screenshot.Infrastructure.MongoDb
 {
     public interface IMongoContext
     {
-        IMongoCollection<Screenshot> Screenshots { get; }
+        IMongoCollection<Domain.Screenshot> Screenshots { get; }
     }
 }

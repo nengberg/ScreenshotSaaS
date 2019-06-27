@@ -12,6 +12,6 @@ namespace Screenshot.Infrastructure.MongoDb
             _database = mongoClient.GetDatabase(dbSettings.DatabaseName);
         }
 
-        public IMongoCollection<Screenshot> Screenshots => _database.GetCollection<Screenshot>(nameof(Screenshot));
+        public IMongoCollection<Domain.Screenshot> Screenshots => _database.GetCollection<Domain.Screenshot>(nameof(Screenshot));
     }
 }

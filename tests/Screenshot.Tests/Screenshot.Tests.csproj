@@ -25,5 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Screenshot.API\Screenshot.API.csproj" />
+    <ProjectReference Include="..\..\src\Screenshot.Domain\Screenshot.Domain.csproj" />
   </ItemGroup>
 </Project>

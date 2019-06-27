@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Screenshot.Domain\Screenshot.Domain.csproj" />
     <ProjectReference Include="..\Screenshot.Infrastructure\Screenshot.Infrastructure.csproj" />
   </ItemGroup>
   

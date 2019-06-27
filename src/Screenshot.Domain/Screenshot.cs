@@ -1,6 +1,6 @@
 using System;
 
-namespace Screenshot.Infrastructure
+namespace Screenshot.Domain
 {
     public class Screenshot
     {

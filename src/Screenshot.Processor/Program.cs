@@ -5,8 +5,7 @@ using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using RabbitMQ.Client;
-
+using Screenshot.Domain;
 using Screenshot.Infrastructure;
 using Screenshot.Infrastructure.MongoDb;
 using Screenshot.Infrastructure.RabbitMq;

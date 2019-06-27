@@ -16,4 +16,8 @@
     <PackageReference Include="MongoDB.Driver.Core" Version="2.8.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Screenshot.Domain\Screenshot.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
