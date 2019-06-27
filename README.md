@@ -34,7 +34,7 @@ There are two endpoints exposed.
     POST /api/batches
     GET  /api/screenshots
 
-If you use the default settings it will be accessible through via `http://localhost:5000`. You can see example requests in the Postman collection `Screenshot SaaS.postman_collection.json` in the repository.
+If you use the default settings it will be accessible at `http://localhost:5000`. You can see example requests in the Postman collection `Screenshot SaaS.postman_collection.json` in the repository.
 
 `/api/batches` accepts a json body
 
@@ -58,28 +58,28 @@ The specified URL:s will be screen captured. They will then eventually be availa
 
 ## Architecture
 
-The application consist of two backend services. API and Processor.
+The application consist of two backend services: API and Processor.
 
-The API is responsible for exposing API endpoints to the client. The API is communicating with the Processor via asynchronous messages (a simple implementation of RabbitMQ is the one used here).
+The API is responsible for exposing API endpoints to the client. The API is communicating with the Processor via asynchronous messages (a simple implementation of RabbitMQ is used).
 
-The Processor will process incoming messages of type `GenerateScreenshotMessage` and sceen capture the URL in the message by communicating with a selenium hub. The screenshot is then persisted in a MongoDB instance.
+The Processor will process incoming messages of type `GenerateScreenshotMessage` and screen capture the URL in the message by communicating with a selenium hub. The screenshot is then persisted in a MongoDB instance.
 
-If you run the application via docker you will have access to Mongo Express to view the data in the database via `http://localhost:8080`. The name of the database is `Screenshots_dkr`.
+If you run the application via docker you will have access to Mongo Express to view the data in the database at `http://localhost:8080`. The name of the database is `Screenshots_dkr`.
 
 ### Scaling
 
-This architecture allows the application to be scaled horizontally. The heavy lifting is done in the Processor. That service could easily be scaled to handle heavy loads of messages. In the docker example the screenshot processing is done using [Selenium-Grid](https://www.seleniumhq.org/docs/07_selenium_grid.jsp). With this setup you can run screenshot processing in parallel using multiple nodes.
+This architecture allows the application to be scaled horizontally to support high load. The heavy lifting will be handled by the Processor. This service could easily be scaled to handle many messages. In the docker example the screenshot processing is done using [Selenium-Grid](https://www.seleniumhq.org/docs/07_selenium_grid.jsp). With this setup you can run screenshot processing in parallel using multiple nodes.
 
 To try this out you can start the services using the following docker-compose command
 
     docker-compose -f .\docker-compose.infrastructure.yml -f .\docker-compose.yml up --scale screenshot-processor=3 --scale firefoxnode=3
 
-This will create three instances of `screenshot-processor` and three instances of `firefoxnode`. Just to show you that the application still works and that the work will be distributed among those.
+This will create three instances of `screenshot-processor` and three instances of `firefoxnode`. The work  will be distributed among those nodes.
 
 #### Things to consider
 
-With this setup only one instance of MongoDB is used. To make sure that this won't be the bottleneck replicas can be used. If hosted in Azure or AWS their blob storages should be used.
+With this setup only one instance of MongoDB is used. To make sure that this won't be the bottleneck replicas can be used. If hosted in Azure or AWS their blob storages can be used.
 
 No load balancer is used in this example application for simplicity. In a real world scenario nginx or any other good load balancer should be used to handle load properly.
 
-The message queue implementation of RabbitMQ is a bit simplified, just to decouple the services and make them autonomous and subject for scaling. In a real world scenario this should be configured using multiple nodes that forms a cluster. Resiliency of connection and retries for messages should also be implemented.
+The message queue implementation of RabbitMQ is really simplified, just to examplify decoupling between the services and make them autonomous and subject for scaling. In a real world scenario this should be configured using multiple nodes to form a cluster. Resiliency of connection and retries for messages should also be implemented.
