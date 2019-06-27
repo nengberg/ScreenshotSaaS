@@ -78,7 +78,7 @@ This will create three instances of `screenshot-processor` and three instances o
 
 #### Things to consider
 
-With this setup only one instance of MongoDB is used. To make sure that this won't be the bottleneck replicas can be used. If hosted in Azure or AWS their blob storages can be used.
+With this setup only one instance of MongoDB is used. To make sure that this won't be the bottleneck replicas can be used. If hosted in any cloud provider (Azure, AWS or GCP) their blob storages can be used.
 
 No load balancer is used in this example application for simplicity. In a real world scenario nginx or any other good load balancer should be used to handle load properly.
 
