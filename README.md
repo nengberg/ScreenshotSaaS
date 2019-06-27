@@ -70,6 +70,12 @@ If you run the application via docker you will have access to Mongo Express to v
 
 This architecture allows the application to be scaled horizontally. The heavy lifting is done in the Processor. That service could easily be scaled to handle heavy loads of messages. In the docker example the screenshot processing is done using [Selenium-Grid](https://www.seleniumhq.org/docs/07_selenium_grid.jsp). With this setup you can run screenshot processing in parallel using multiple nodes.
 
+To try this out you can start the services using the following docker-compose command
+
+    docker-compose -f .\docker-compose.infrastructure.yml -f .\docker-compose.yml up --scale screenshot-processor=3 --scale firefoxnode=3
+
+This will create three instances of `screenshot-processor` and three instances of `firefoxnode`. Just to show you that the application still works and that the work will be distributed among those.
+
 #### Things to consider
 
 With this setup only one instance of MongoDB is used. To make sure that this won't be the bottleneck replicas can be used. If hosted in Azure or AWS their blob storages should be used.
