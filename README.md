@@ -51,6 +51,7 @@ The specified URL:s will be screen captured. They will then eventually be availa
         "count": 1,
         "screenshots": [
             {
+                "url": "https://www.google.com/",
                 "data": "iVBORw0KGgoAA"
             }
          ]
