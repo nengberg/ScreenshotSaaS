@@ -10,18 +10,18 @@ namespace Screenshot.API.Features.Batch
 {
     public class SubmitUrlBatchRequestHandler : IRequestHandler<SubmitUrlBatchRequest>
     {
-        private readonly IMessageBroker _messagePublisher;
+        private readonly IMessageBroker _messageBroker;
 
-        public SubmitUrlBatchRequestHandler(IMessageBroker messagePublisher)
+        public SubmitUrlBatchRequestHandler(IMessageBroker messageBroker)
         {
-            _messagePublisher = messagePublisher;
+            _messageBroker = messageBroker;
         }
 
         public Task<Unit> Handle(SubmitUrlBatchRequest request, CancellationToken cancellationToken)
         {
             foreach(var url in request.Urls)
             {
-                _messagePublisher.Publish(new GenerateScreenshotMessage(url));
+                _messageBroker.Publish(new GenerateScreenshotMessage(url));
             }
 
             return Task.FromResult(Unit.Value);

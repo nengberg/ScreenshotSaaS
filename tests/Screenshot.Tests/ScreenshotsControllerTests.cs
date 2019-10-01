@@ -11,6 +11,7 @@ using Screenshot.API.Features.Screenshot;
 using Shouldly;
 
 using Xunit;
+using Screenshot = Screenshot.Domain.Screenshot;
 
 
 namespace Screenshot.Tests

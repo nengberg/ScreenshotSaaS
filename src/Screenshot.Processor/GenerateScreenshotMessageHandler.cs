@@ -19,7 +19,7 @@ namespace Screenshot.Processor
             _saveScreenshotCommand = saveScreenshotCommand;
         }
 
-        public async Task Handle(GenerateScreenshotMessage message)
+        public async Task Handle(GenerateScreenshotMessage message, CancellationToken cancellationToken)
         {
             if(message == null)
             {
@@ -32,7 +32,7 @@ namespace Screenshot.Processor
             {
                 driver.Navigate().GoToUrl(message.Url);
                 var screenshot = (driver as ITakesScreenshot).GetScreenshot();
-                await _saveScreenshotCommand.Execute(CreateScreenshot(message, screenshot.AsByteArray), CancellationToken.None);
+                await _saveScreenshotCommand.Execute(CreateScreenshot(message, screenshot.AsByteArray), cancellationToken);
             }
         }
 

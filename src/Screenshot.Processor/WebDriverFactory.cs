@@ -23,6 +23,7 @@ namespace Screenshot.Processor
             var service = FirefoxDriverService.CreateDefaultService(driverPath, "geckodriver.exe");
             var options = new FirefoxOptions();
             options.AddArguments("--headless");
+            
             return new FirefoxDriver(service, options);
         }
 

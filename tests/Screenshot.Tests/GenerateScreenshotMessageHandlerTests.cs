@@ -42,7 +42,7 @@ namespace Screenshot.Tests
         [Fact]
         public async Task Handle_CalledWithMessage_NavigatesToUrlFromMessage()
         {
-            await _sut.Handle(_message);
+            await _sut.Handle(_message, CancellationToken.None);
 
             _navigation.Received(1).GoToUrl(Arg.Is(_message.Url));
         }
@@ -50,7 +50,7 @@ namespace Screenshot.Tests
         [Fact]
         public async Task Handle_WebDriverGeneratesScreenshotFromNavigatedUrl_CommandWithByteArrayFromThatScreenshotIsCalled()
         {
-            await _sut.Handle(_message);
+            await _sut.Handle(_message, CancellationToken.None);
 
             await _saveScreenshotCommand.Received(1)
                 .Execute(
@@ -61,7 +61,7 @@ namespace Screenshot.Tests
         [Fact]
         public async Task Handle_MessageNull_ThrowsArgumentNullException()
         {
-            var exception = await Record.ExceptionAsync(() => _sut.Handle(null));
+            var exception = await Record.ExceptionAsync(() => _sut.Handle(null, CancellationToken.None));
 
             exception.ShouldBeOfType<ArgumentNullException>();
         }

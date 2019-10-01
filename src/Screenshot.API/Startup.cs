@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Extensions.Hosting;
 using Screenshot.API.Features.Batch;
 using Screenshot.Domain;
 using Screenshot.Infrastructure.MongoDb;
@@ -25,12 +25,11 @@ namespace Screenshot.API
         }
 
         public IConfiguration Configuration { get; }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining(typeof(SubmitUrlBatchRequestValidator)));
 
             services.AddProblemDetails();
@@ -39,10 +38,10 @@ namespace Screenshot.API
             services.AddMongoDb(Configuration);
             services.AddTransient<IGetScreenshotsQuery, MongoDbGetScreenshotsQuery>();
         }
-        
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if(env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -54,7 +53,12 @@ namespace Screenshot.API
 
             app.UseHttpsRedirection();
             app.UseProblemDetails();
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
